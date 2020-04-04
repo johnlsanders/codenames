@@ -15,10 +15,12 @@ import (
 	"github.com/jbowens/codenames"
 )
 
-const listenAddr = ":9091"
+
 const expiryDur = -12 * time.Hour
 
 func main() {
+	listenAddr := GetPort()
+	
 	rand.Seed(time.Now().UnixNano())
 
 	// Open a Pebble DB to persist games to disk.
@@ -111,4 +113,13 @@ func takeTrace(dst string) {
 	if err != nil {
 		log.Printf("[TRACE] error renaming trace: %s", err)
 	}
+}
+
+func GetPort() string {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "9091"
+		log.Println("[-] No PORT environment variable detected. Setting to ", port)
+	}
+	return ":" + port
 }
